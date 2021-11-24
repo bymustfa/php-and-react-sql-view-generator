@@ -1,0 +1,20 @@
+{
+    "name": "mustafao/view-generator",
+    "autoload": {
+        "psr-4": {
+            "Mustafao\\ViewGenerator\\": "src/"
+        },
+        "files": [
+            "./config/helpers.php"
+          ]
+    },
+    "authors": [
+        {
+            "name": "Mustafa ÖZTÜRK",
+            "email": "bay.mustafa.37@hotmail.com"
+        }
+    ],
+    "require": {
+        "izniburak/router": "^2.3"
+    }
+}
