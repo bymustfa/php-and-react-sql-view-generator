@@ -1,19 +1,12 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Code,
-  Input,
-  IconButton,
-  ButtonGroup,
-} from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { Box, Button, Code, Input } from "@chakra-ui/react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { Play } from "./icons";
 
 export default function Sql({ code }) {
   return (
-    <Box mt="10">
+    <Box mt="10" position="relative">
       <Code p="5" borderRadius="10px" w="100%">
         <Box>
           CREATE VIEW
@@ -26,8 +19,17 @@ export default function Sql({ code }) {
         </Box>
       </Code>
 
-      <Button mr="-px">
-        Run <AddIcon ml="2" />
+      <Button
+        colorScheme="teal"
+        position="absolute"
+        right="1"
+        top="1"
+        color="gray.800"
+        _hover={{ color: "white" }}
+        size="sm"
+        rightIcon={<Play />}
+      >
+        Run
       </Button>
     </Box>
   );
