@@ -10,6 +10,31 @@ function response($content = [], $status_code = 200)
     $response->send();
 }
 
+
+function sendMessage( $status, $datas ){
+    return ["status" => $status, "datas" => $datas];
+}
+
+// return guid
+function guid()
+{
+    if (function_exists('com_create_guid')) {
+        return com_create_guid();
+    } else {
+        mt_srand((double)microtime() * 10000);
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45);
+        $uuid = substr($charid, 0, 8) . $hyphen
+            . substr($charid, 8, 4) . $hyphen
+            . substr($charid, 12, 4) . $hyphen
+            . substr($charid, 16, 4) . $hyphen
+            . substr($charid, 20, 12);
+        return $uuid;
+    }
+}
+
+
+
 function dataClear($data)
 {
     if (is_array($data)) {
@@ -26,13 +51,13 @@ function post($name)
 {
     if(isset($_POST[$name]))
     {
-        if (is_array($_POST)) {
-            foreach ($_POST as $key => $value) {
-                $_POST[$key] = $value ? dataClear($value) : "";
+        if (is_array($_POST[$name])) {
+            foreach ($_POST[$name] as $key => $value) {
+                $_POST[$name][$key] = $value ? dataClear($value) : "";
             }
-            return $_POST;
+            return $_POST[$name];
         } else {
-            return $_POST ? dataClear($_POST) : "";
+            return $_POST[$name] ? dataClear($_POST[$name]) : "";
         } 
     } else{
         return null;
@@ -42,16 +67,17 @@ function post($name)
 
 
 function get($name)
-{
+{ 
+
     if(isset($_GET[$name]))
     {
-        if (is_array($_GET)) {
-            foreach ($_GET as $key => $value) {
-                $_GET[$key] = $value ? dataClear($value) : "";
+        if (is_array($_GET[$name])) {
+            foreach ($_GET[$name] as $key => $value) {
+                $_GET[$name][$key] = $value ? dataClear($value) : "";
             }
-            return $_GET;
+            return $_GET[$name];
         } else {
-            return $_GET ? dataClear($_GET) : "";
+            return $_GET[$name] ? dataClear($_GET[$name]) : "";
         } 
     } else{
         return null;
