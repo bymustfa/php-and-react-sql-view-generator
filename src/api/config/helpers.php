@@ -86,8 +86,8 @@ function get($name)
 
 
 
-function query($query, $params = [], $dbName){
-    $db = new PDO('mysql:host=localhost;dbname='.$dbName, 'root', '');
+function query($query, $params = [], $dbDatas = []){
+    $db = new PDO('mysql:host='.$dbDatas['db_host'].';dbname='.$dbDatas['db_name'], $dbDatas['db_user'], $dbDatas['db_password']);
 
     $req = $db->prepare($query);
     $req->execute($params);

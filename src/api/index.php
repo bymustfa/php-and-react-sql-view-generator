@@ -47,7 +47,7 @@ $router->group("/V1", function ($router)
 
         $router->post("/add", function ()
         {
-  
+
             try
             {
                 $json = file_get_contents(__DIR__ . '/database.json');
@@ -58,7 +58,6 @@ $router->group("/V1", function ($router)
                 $datas["db_name"] = post("db_name");
                 $datas["db_user"] = post("db_user");
                 $datas["db_password"] = post("db_password");
- 
 
                 if (!isset($datas['db_password']))
                 {
@@ -104,10 +103,66 @@ $router->group("/V1", function ($router)
 
     $router->group("/tables", function ($router)
     {
-        $router->get("/", function ()
+        $router->get("/:string", function ($dbId)
         {
-            $response = query("SELECT * FROM demo_table", [], "test");
-            response($response);
+            try
+            {
+                $dbId = dataClear($dbId);
+                if (isset($dbId))
+                {
+
+                    $json = file_get_contents(__DIR__ . '/database.json');
+                    $json = json_decode($json, true);
+
+                    $find = array_filter($json, function ($item) use ($dbId)
+                    {
+                        return $item['id'] == $dbId;
+                    });
+                    $find = array_values($find) [0];
+
+                    if (isset($find))
+                    {
+                        $tables = [];
+                        $response = query("SHOW TABLES", [], $find);
+                        foreach ($response as $table)
+                        {
+                            foreach ($table as $key => $tableName)
+                            {
+                                $columns  = query("SHOW COLUMNS FROM $tableName", [], $find);
+
+                                // array all keys and values to lower
+                                $columns = array_map(function ($item)
+                                {  
+                                    // array value to lowercase
+                                    $item = array_map('strtolower', $item);                                    
+                                    return array_change_key_case($item, CASE_LOWER);
+                                } , $columns);
+                                
+                                
+
+                                $tables[] = ["table_name" => $tableName, "columns" => $columns];
+                            }
+                        }
+
+                        response(sendMessage(true, $tables));
+
+                    }
+                    else
+                    {
+                        throw new Exception("Database not found");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("Not send DB ID");
+                }
+            }
+            catch(Exception $e)
+            {
+                response(sendMessage(false, $e->getMessage()) , 400);
+            }
+
         });
 
         $router->get("/table-columns/:string", function ($tableName)
